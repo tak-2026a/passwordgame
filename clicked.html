@@ -8,7 +8,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>點擊極限挑戰 - Click Challenge</title>
+    <title>點擊後可以修正密碼</title>
 
 
     <style>
@@ -126,22 +126,41 @@
 
             letter-spacing: 2px;
 
-            margin-bottom: 10px;
+            margin-bottom: 8px;
 
         }
 
 
         h1 {
 
-            margin: 5px 0 15px;
+            margin: 5px 0 10px;
 
             font-size: 26px;
 
-            letter-spacing: 3px;
+            letter-spacing: 2px;
 
             color: #00ff66;
 
             text-shadow: 0 0 10px rgba(0, 255, 100, 0.8);
+
+        }
+
+
+        /* 說明文字 */
+
+        .desc-box {
+
+            color: #00e5ff;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            margin-bottom: 16px;
+
+            letter-spacing: 1px;
+
+            text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
 
         }
 
@@ -158,7 +177,7 @@
 
             gap: 12px;
 
-            margin: 18px 0;
+            margin: 16px 0;
 
         }
 
@@ -217,7 +236,7 @@
 
         .progress-section {
 
-            margin: 15px 0 20px;
+            margin: 15px 0 18px;
 
         }
 
@@ -343,7 +362,7 @@
 
             position: relative;
 
-            margin: 20px 0;
+            margin: 18px 0;
 
         }
 
@@ -352,7 +371,7 @@
 
             width: 100%;
 
-            height: 120px;
+            height: 110px;
 
             background: radial-gradient(
                 circle,
@@ -395,13 +414,9 @@
 
             display: flex;
 
-            flex-direction: column;
-
             justify-content: center;
 
             align-items: center;
-
-            gap: 6px;
 
         }
 
@@ -438,17 +453,6 @@
                 0 0 35px rgba(0, 255, 100, 0.8),
 
                 inset 0 0 25px rgba(0, 255, 100, 0.6);
-
-        }
-
-
-        .click-subtext {
-
-            font-size: 13px;
-
-            color: #00aa44;
-
-            letter-spacing: 1px;
 
         }
 
@@ -503,16 +507,16 @@
 
             color: #496b53;
 
-            line-height: 1.6;
+            line-height: 1.8;
 
         }
 
 
-        .reset-link {
+        .nav-link {
 
             display: inline-block;
 
-            margin-top: 10px;
+            margin: 6px 10px 0;
 
             color: #008833;
 
@@ -525,7 +529,7 @@
         }
 
 
-        .reset-link:hover {
+        .nav-link:hover {
 
             color: #00ff66;
 
@@ -546,12 +550,21 @@
 
     <div class="top-status">
 
-        SYSTEM // ULTRA CLICK COUNTER
+        SYSTEM // PASSWORD OVERRIDE PROTOCOL
 
     </div>
 
 
-    <h1>⚡ 點擊極限挑戰 ⚡</h1>
+    <h1>⚡ 點擊後可以修正密碼 ⚡</h1>
+
+
+    <!-- 說明文字 -->
+
+    <div class="desc-box">
+
+        點擊下面核心累積能量，足夠時可以移除密碼
+
+    </div>
 
 
 
@@ -586,9 +599,9 @@
 
         <div class="progress-header">
 
-            <span>能量進度：<span id="percentText">0%</span></span>
+            <span>核心充能進度：<span id="percentText">0%</span></span>
 
-            <span>目標：20,000 次</span>
+            <span>狀態：充能中...</span>
 
         </div>
 
@@ -609,7 +622,7 @@
 
         <div id="encouragementText" class="encouragement-text">
 
-            💡 點擊下方核心按鈕開始累積能量！
+            💡 點擊下方核心累積能量，足夠時可以移除密碼
 
         </div>
 
@@ -626,9 +639,7 @@
             class="click-button"
             onclick="handleClick(event)">
 
-            <span>💥 點擊我！CLICK HERE</span>
-
-            <span class="click-subtext">[ 每點 1 次 +1 分 · 滿千送鼓勵 ]</span>
+            <span>💥 點擊核心累積能量</span>
 
         </button>
 
@@ -640,9 +651,11 @@
 
     <div class="footer-bar">
 
-        🎯 當點擊累積達到 20,000 次時，將進入極限臨界反應！<br>
+        🎯 充能完成後系統將自動解除密碼鎖定並開放重設<br>
 
-        <span class="reset-link" onclick="resetCounter()">[ 重置計數歸零 ]</span>
+        <a href="index.html" class="nav-link">[ 返回密碼挑戰 ]</a>
+
+        <span class="nav-link" onclick="resetCounter()">[ 重置計數歸零 ]</span>
 
     </div>
 
@@ -679,50 +692,50 @@
 
 
     // ==================================================
-    // 1000次專屬鼓勵詞語庫
+    // 1000次專屬鼓勵詞語庫 (密碼覆寫/破解氛圍)
     // ==================================================
 
     const encouragements = [
 
-        "🌟 太神啦！突破 1,000 次！手指開始發熱！",
+        "🌟 突破 1,000 次！核心能量正在快速聚集！",
 
-        "🔥 突破 2,000 次！這手速簡直非同凡響！",
+        "🔥 突破 2,000 次！密碼保護壁障開始削弱！",
 
-        "⚡ 突破 3,000 次！音速般的點擊節奏，勢不可擋！",
+        "⚡ 突破 3,000 次！重設電路已接通，持續充能！",
 
-        "🚀 突破 4,000 次！無可阻擋的強大爆發力！",
+        "🚀 突破 4,000 次！安全防火牆正在被解析！",
 
-        "💥 突破 5,000 次！已經超越 99% 的一般人類！",
+        "💥 突破 5,000 次！已瓦解 25% 密碼鎖定協議！",
 
-        "🏆 突破 6,000 次！按鍵都在為你的熱情燃燒！",
+        "🏆 突破 6,000 次！核心充能穩定上升！",
 
-        "🦾 突破 7,000 次！機器人般的極限超能發揮！",
+        "🦾 突破 7,000 次！底層權限覆寫正在進行中！",
 
-        "🌠 突破 8,000 次！傳奇級的手速神話誕生！",
+        "🌠 突破 8,000 次！能量穩定匯聚，請繼續加油！",
 
-        "🔮 突破 9,000 次！戰鬥力已經衝破天際！",
+        "🔮 突破 9,000 次！密碼移除進程持續推進！",
 
-        "👑 突破 10,000 次！萬次點擊達人，唯你獨尊！",
+        "👑 突破 10,000 次！能量已達 50%，即將成功！",
 
-        "💫 突破 11,000 次！次元壁即將被你點穿！",
+        "💫 突破 11,000 次！安全晶片保護機制正在鬆動！",
 
-        "🎯 突破 12,000 次！穩健精準，神乎其技！",
+        "🎯 突破 12,000 次！覆寫信號正在傳輸中！",
 
-        "⚔️ 突破 13,000 次！戰意沸騰，無堅不摧！",
+        "⚔️ 突破 13,000 次！密碼防線即將崩解！",
 
-        "🛡️ 突破 14,000 次！堅韌不拔，意志如鋼！",
+        "🛡️ 突破 14,000 次！重設授權已獲取 70%！",
 
-        "🌋 突破 15,000 次！狂暴能量已達臨界點！",
+        "🌋 突破 15,000 次！能量正在逼近最高臨界點！",
 
-        "🌈 突破 16,000 次！奇蹟般的耐力，震撼全場！",
+        "🌈 突破 16,000 次！即將滿足密碼強制移除條件！",
 
-        "🌪️ 突破 17,000 次！狂風暴雨般的極速狂瀾！",
+        "🌪️ 突破 17,000 次！系統權限覆寫 85%！",
 
-        "⚠️ 突破 18,000 次！系統核心過熱警報響起！",
+        "⚡ 突破 18,000 次！最後衝刺階段，即將解鎖！",
 
-        "🚨 突破 19,000 次！極限臨界過載即將發生！",
+        "✨ 突破 19,000 次！密碼清除程序準備就緒！",
 
-        "🧨 突破 20,000 次！極限達成，引爆程序啟動！"
+        "🔓 突破 20,000 次！能量達到 100%，正在移除密碼..."
 
     ];
 
@@ -752,7 +765,7 @@
         scoreEl.textContent = score.toLocaleString();
 
 
-        // 更新進度條
+        // 更新進度條 (偷偷在 20000 次滿載)
 
         const pct = Math.min(100, (clicks / 20000) * 100);
 
@@ -788,23 +801,23 @@
         }
 
 
-        // 達到 20000 次跳轉到 explode.html
+        // 達到 20000 次時跳轉到 explode.html
 
         if (clicks >= 20000 && !isRedirecting) {
 
             isRedirecting = true;
 
             encouragementText.textContent =
-                "🧨 能量全面超載！即將引爆系統！";
+                "🔓 能量已達 100%！正在執行密碼覆寫程序...";
 
-            encouragementText.style.color = "#ff3333";
+            encouragementText.style.color = "#00ff66";
 
 
             setTimeout(() => {
 
                 window.location.href = "explode.html";
 
-            }, 200);
+            }, 250);
 
         }
 
@@ -896,7 +909,7 @@
         percentText.textContent = "0%";
 
         encouragementText.textContent =
-            "💡 點擊下方核心按鈕開始累積能量！";
+            "💡 點擊下方核心累積能量，足夠時可以移除密碼";
 
         encouragementText.style.color = "#00e5ff";
 

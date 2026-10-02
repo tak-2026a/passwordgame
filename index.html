@@ -476,6 +476,34 @@
         }
 
 
+        .forgot-link {
+
+            display: inline-block;
+
+            margin-top: 8px;
+
+            color: #00aa44;
+
+            text-decoration: underline;
+
+            font-size: 13px;
+
+            cursor: pointer;
+
+            transition: color 0.2s, text-shadow 0.2s;
+
+        }
+
+
+        .forgot-link:hover {
+
+            color: #00ff66;
+
+            text-shadow: 0 0 8px rgba(0, 255, 100, 0.7);
+
+        }
+
+
         /* =========================================
            狀態列
         ========================================= */
@@ -695,7 +723,7 @@
 
         <span class="secret-keyboard" onclick="showSecretPassword()">⌨️</span> 按 Enter 可以快速確認<br>
 
-        🤖 使用 AutoHotkey 挑戰自動破解
+        <a href="clicked.html" class="forgot-link">密碼遺忘</a>
 
     </div>
 
