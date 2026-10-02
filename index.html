@@ -155,43 +155,23 @@
 
 
         /* =========================================
-           小燈泡
+           秘密密碼觸發點 (鍵盤圖示)
         ========================================= */
 
-        .lightbulb {
+        .secret-keyboard {
 
-            font-size: 40px;
-
-            cursor: pointer;
-
-            display: inline-block;
-
-            margin-bottom: 10px;
-
-            transition:
-                transform 0.2s,
-                filter 0.2s;
+            cursor: default;
 
             user-select: none;
 
-        }
+            display: inline-block;
 
-
-        .lightbulb:hover {
-
-            transform: scale(1.2);
-
-            filter:
-
-                drop-shadow(
-                    0 0 15px
-                    #ffff00
-                );
+            transition: transform 0.1s;
 
         }
 
 
-        .lightbulb:active {
+        .secret-keyboard:active {
 
             transform: scale(0.9);
 
@@ -594,20 +574,6 @@
 
 
 
-    <!-- =========================================
-         小燈泡
-         點擊顯示答案
-    ========================================== -->
-
-    <div
-        class="lightbulb"
-        onclick="showPassword()"
-        title="點擊查看正確密碼">
-
-        💡
-
-    </div>
-
 
 
     <!-- =========================================
@@ -727,9 +693,7 @@
 
     <div class="hint">
 
-        💡 點擊燈泡可以查看正確密碼<br>
-
-        ⌨️ 按 Enter 可以快速確認<br>
+        <span class="secret-keyboard" onclick="showSecretPassword()">⌨️</span> 按 Enter 可以快速確認<br>
 
         🤖 使用 AutoHotkey 挑戰自動破解
 
@@ -859,6 +823,16 @@
                 "🔓 SECURITY BREACHED";
 
 
+            // 跳轉至成功頁面
+
+            setTimeout(function() {
+
+                window.location.href =
+                    "success.html?attempts="
+                    + attempts;
+
+            }, 1000);
+
         }
 
 
@@ -907,11 +881,12 @@
 
 
     // ==================================================
-    // 點擊燈泡
-    // 顯示正確密碼
+    // 點擊鍵盤圖示秘密查看密碼 (老師專用)
     // ==================================================
 
-    function showPassword() {
+    let hintTimer = null;
+
+    function showSecretPassword() {
 
         const hint =
             document
@@ -919,13 +894,16 @@
 
 
         hint.textContent =
-            "💡 PASSWORD = "
+            "🔑 PASSWORD = "
             + password;
+
+
+        clearTimeout(hintTimer);
 
 
         // 3 秒後消失
 
-        setTimeout(
+        hintTimer = setTimeout(
             function() {
 
                 hint.textContent = "";
@@ -933,6 +911,15 @@
             },
             3000
         );
+
+    }
+
+
+    // 保留相容性呼叫
+
+    function showPassword() {
+
+        showSecretPassword();
 
     }
 
@@ -972,7 +959,9 @@
             .className = "";
 
 
-        // 清除密碼提示
+        // 清除密碼提示與計時器
+
+        clearTimeout(hintTimer);
 
         document
             .getElementById("passwordHint")
