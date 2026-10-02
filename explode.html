@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SYSTEM OVERLOAD - 炸藥引爆倒數</title>
+
+
+    <style>
+
+        /* =========================================
+           全域設定
+        ========================================= */
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background: #000000;
+
+            color: #ff3344;
+
+            font-family:
+                "Courier New",
+                "Microsoft JhengHei",
+                monospace;
+
+            overflow: hidden;
+
+            position: relative;
+
+        }
+
+
+        /* 背景警告紅網格 */
+
+        body::before {
+
+            content: "";
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background-image:
+
+                linear-gradient(
+                    rgba(255, 30, 60, 0.07) 1px,
+                    transparent 1px
+                ),
+
+                linear-gradient(
+                    90deg,
+                    rgba(255, 30, 60, 0.07) 1px,
+                    transparent 1px
+                );
+
+            background-size: 40px 40px;
+
+            pointer-events: none;
+
+        }
+
+
+        /* 警告警戒線 */
+
+        .hazard-stripe {
+
+            position: fixed;
+
+            left: 0;
+
+            width: 100%;
+
+            height: 8px;
+
+            background: repeating-linear-gradient(
+                45deg,
+                #ffcc00,
+                #ffcc00 15px,
+                #000000 15px,
+                #000000 30px
+            );
+
+            z-index: 100;
+
+        }
+
+        .hazard-top { top: 0; }
+        .hazard-bottom { bottom: 0; }
+
+
+        /* =========================================
+           主控制台容器
+        ========================================= */
+
+        .container {
+
+            width: 500px;
+
+            max-width: 92%;
+
+            padding: 35px 25px;
+
+            background: #080203;
+
+            border: 2px solid #ff2244;
+
+            border-radius: 14px;
+
+            text-align: center;
+
+            box-shadow:
+
+                0 0 20px rgba(255, 34, 68, 0.4),
+
+                0 0 60px rgba(255, 34, 68, 0.15);
+
+            position: relative;
+
+            z-index: 10;
+
+        }
+
+
+        .alert-title {
+
+            font-size: 13px;
+
+            letter-spacing: 2px;
+
+            color: #ff5566;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .headline {
+
+            margin: 0 0 15px;
+
+            font-size: 26px;
+
+            color: #ff2244;
+
+            letter-spacing: 2px;
+
+            text-shadow: 0 0 12px rgba(255, 34, 68, 0.9);
+
+            animation: flashText 1s infinite alternate;
+
+        }
+
+
+        @keyframes flashText {
+
+            0% {
+                opacity: 0.8;
+                text-shadow: 0 0 10px rgba(255, 34, 68, 0.6);
+            }
+
+            100% {
+                opacity: 1;
+                text-shadow: 0 0 20px rgba(255, 34, 68, 1);
+            }
+
+        }
+
+
+        /* =========================================
+           倒數數字儀表
+        ========================================= */
+
+        .countdown-box {
+
+            margin: 15px auto;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+        }
+
+
+        .countdown-label {
+
+            font-size: 13px;
+
+            color: #ff8899;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .countdown-number {
+
+            font-size: 72px;
+
+            font-weight: 900;
+
+            color: #ffff00;
+
+            text-shadow:
+
+                0 0 15px rgba(255, 255, 0, 0.8),
+
+                0 0 35px rgba(255, 50, 0, 0.7);
+
+            line-height: 1;
+
+            animation: countPulse 1s infinite;
+
+        }
+
+
+        @keyframes countPulse {
+
+            0% {
+                transform: scale(1.15);
+            }
+
+            50% {
+                transform: scale(1);
+            }
+
+            100% {
+                transform: scale(1.15);
+            }
+
+        }
+
+
+        /* =========================================
+           炸藥 (TNT Dynamite) 造型舞台
+        ========================================= */
+
+        .dynamite-stage {
+
+            width: 100%;
+
+            height: 200px;
+
+            margin: 15px 0;
+
+            position: relative;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background: #020001;
+
+            border: 1px solid #3d0e14;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+
+        }
+
+
+        /* 炸藥捆本體 */
+
+        .dynamite-bundle {
+
+            position: relative;
+
+            width: 120px;
+
+            height: 120px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+        }
+
+
+        /* 單根炸藥 */
+
+        .tnt-stick {
+
+            position: absolute;
+
+            width: 28px;
+
+            height: 105px;
+
+            background: linear-gradient(
+                90deg,
+                #990011 0%,
+                #cc1122 40%,
+                #ee2233 60%,
+                #880011 100%
+            );
+
+            border-radius: 6px;
+
+            box-shadow:
+
+                0 4px 10px rgba(0, 0, 0, 0.8),
+
+                0 0 10px rgba(255, 34, 68, 0.4);
+
+        }
+
+
+        .tnt-stick.stick-1 {
+
+            transform: translateX(-24px);
+
+        }
+
+
+        .tnt-stick.stick-2 {
+
+            transform: translateX(24px);
+
+        }
+
+
+        .tnt-stick.stick-3 {
+
+            transform: translateY(6px);
+
+            z-index: 2;
+
+        }
+
+
+        /* 炸藥綁帶 */
+
+        .tnt-strap {
+
+            position: absolute;
+
+            width: 85px;
+
+            height: 18px;
+
+            background: #111111;
+
+            border: 1px solid #444444;
+
+            border-radius: 3px;
+
+            z-index: 5;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            color: #ffff00;
+
+            font-size: 11px;
+
+            font-weight: bold;
+
+            letter-spacing: 2px;
+
+        }
+
+
+        .strap-top {
+
+            top: 25px;
+
+        }
+
+
+        .strap-bottom {
+
+            bottom: 25px;
+
+        }
+
+
+        /* 引信 (Fuse) */
+
+        .fuse-path {
+
+            position: absolute;
+
+            top: -30px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            width: 70px;
+
+            height: 40px;
+
+            z-index: 1;
+
+        }
+
+
+        /* 燃燒火花 */
+
+        .fuse-spark {
+
+            position: absolute;
+
+            top: -35px;
+
+            left: 28px;
+
+            font-size: 26px;
+
+            animation: sparkBurn 5s linear forwards, sparkShake 0.1s infinite;
+
+            z-index: 10;
+
+        }
+
+
+        @keyframes sparkBurn {
+
+            0% {
+                top: -35px;
+                left: 20px;
+                opacity: 1;
+            }
+
+            40% {
+                top: -20px;
+                left: 45px;
+            }
+
+            80% {
+                top: -10px;
+                left: 55px;
+            }
+
+            100% {
+                top: 0px;
+                left: 60px;
+                opacity: 1;
+            }
+
+        }
+
+
+        @keyframes sparkShake {
+
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+            }
+
+            50% {
+                transform: scale(1.3) rotate(20deg);
+            }
+
+        }
+
+
+        /* =========================================
+           爆炸特效層
+        ========================================= */
+
+        .flash-overlay {
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 100vw;
+            height: 100vh;
+
+            background: #ffffff;
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            z-index: 999;
+
+        }
+
+
+        /* 爆炸震撼晃動 */
+
+        .shaking {
+
+            animation: screenShake 0.7s cubic-bezier(.36,.07,.19,.97) both;
+
+        }
+
+
+        @keyframes screenShake {
+
+            10%, 90% { transform: translate3d(-6px, 4px, 0); }
+
+            20%, 80% { transform: translate3d(8px, -6px, 0); }
+
+            30%, 50%, 70% { transform: translate3d(-10px, 8px, 0); }
+
+            40%, 60% { transform: translate3d(10px, -8px, 0); }
+
+        }
+
+
+        /* 爆炸火球衝擊波 */
+
+        .blast-ring {
+
+            position: absolute;
+
+            top: 50%;
+
+            left: 50%;
+
+            transform: translate(-50%, -50%) scale(0);
+
+            width: 120px;
+
+            height: 120px;
+
+            border-radius: 50%;
+
+            background: radial-gradient(
+                circle,
+                #ffffff 0%,
+                #ffff00 30%,
+                #ff3300 70%,
+                transparent 100%
+            );
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            z-index: 50;
+
+        }
+
+
+        /* =========================================
+           爆炸後「停止運作」畫面
+        ========================================= */
+
+        .terminated-overlay {
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 100vw;
+
+            height: 100vh;
+
+            background: #000000;
+
+            display: none;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            align-items: center;
+
+            z-index: 200;
+
+            text-align: center;
+
+            padding: 20px;
+
+        }
+
+
+        /* 螢幕破裂裂紋效果 */
+
+        .cracked-screen {
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background:
+
+                radial-gradient(
+                    circle at 50% 50%,
+                    transparent 40%,
+                    rgba(0, 0, 0, 0.8) 90%
+                ),
+
+                linear-gradient(
+                    135deg,
+                    transparent 48%,
+                    rgba(255, 255, 255, 0.08) 49%,
+                    rgba(255, 255, 255, 0.25) 50%,
+                    transparent 52%
+                ),
+
+                linear-gradient(
+                    45deg,
+                    transparent 48%,
+                    rgba(255, 255, 255, 0.08) 49%,
+                    rgba(255, 255, 255, 0.25) 50%,
+                    transparent 52%
+                );
+
+            pointer-events: none;
+
+        }
+
+
+        /* CRT 雜訊掃描線 */
+
+        .scanlines {
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0, 0, 0, 0.6) 50%,
+                rgba(0, 0, 0, 0.6)
+            );
+
+            background-size: 100% 4px;
+
+            pointer-events: none;
+
+            opacity: 0.7;
+
+        }
+
+
+        .term-badge {
+
+            display: inline-block;
+
+            padding: 8px 22px;
+
+            background: #330000;
+
+            border: 2px solid #ff2233;
+
+            border-radius: 6px;
+
+            color: #ff3344;
+
+            font-size: 18px;
+
+            font-weight: 900;
+
+            letter-spacing: 3px;
+
+            margin-bottom: 20px;
+
+            text-shadow: 0 0 10px #ff2233;
+
+        }
+
+
+        .term-title {
+
+            font-size: 34px;
+
+            color: #888888;
+
+            margin: 10px 0;
+
+            letter-spacing: 4px;
+
+            text-shadow: 0 0 8px #555;
+
+        }
+
+
+        .term-desc {
+
+            font-size: 16px;
+
+            color: #666666;
+
+            max-width: 480px;
+
+            line-height: 1.8;
+
+            margin: 15px 0 25px;
+
+        }
+
+
+        .reboot-btn {
+
+            padding: 14px 32px;
+
+            background: #111111;
+
+            color: #00ff66;
+
+            border: 1px solid #00aa44;
+
+            border-radius: 8px;
+
+            font-family: inherit;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            letter-spacing: 2px;
+
+            transition: 0.2s;
+
+            position: relative;
+
+            z-index: 10;
+
+        }
+
+
+        .reboot-btn:hover {
+
+            background: #06240e;
+
+            box-shadow: 0 0 15px rgba(0, 255, 100, 0.5);
+
+            border-color: #00ff66;
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="hazard-stripe hazard-top"></div>
+
+<div class="hazard-stripe hazard-bottom"></div>
+
+
+<div class="flash-overlay" id="flashOverlay"></div>
+
+
+<!-- 主警報面版 -->
+
+<div class="container" id="mainContainer">
+
+    <div class="alert-title">
+
+        CRITICAL CORE OVERLOAD // 臨界超載
+
+    </div>
+
+
+    <h1 class="headline">
+
+        🚨 炸藥即將引爆 🚨
+
+    </h1>
+
+
+
+    <!-- 倒數數字 -->
+
+    <div class="countdown-box">
+
+        <div class="countdown-label">DETONATION COUNTDOWN</div>
+
+        <div class="countdown-number" id="countdown">5</div>
+
+    </div>
+
+
+
+    <!-- 炸藥舞台 -->
+
+    <div class="dynamite-stage" id="dynamiteStage">
+
+        <!-- 炸藥捆 -->
+
+        <div class="dynamite-bundle" id="dynamiteBundle">
+
+            <!-- 火花 -->
+
+            <div class="fuse-spark" id="fuseSpark">🔥</div>
+
+
+            <!-- 引信 -->
+
+            <svg class="fuse-path" viewBox="0 0 100 50">
+
+                <path
+                    d="M 25 5 Q 50 40 85 45"
+                    stroke="#aa8844"
+                    stroke-width="4"
+                    fill="none"
+                    stroke-dasharray="3 2"
+                />
+
+            </svg>
+
+
+            <!-- 炸藥棒 -->
+
+            <div class="tnt-stick stick-1"></div>
+
+            <div class="tnt-stick stick-2"></div>
+
+            <div class="tnt-stick stick-3"></div>
+
+
+            <!-- 標籤綁帶 -->
+
+            <div class="tnt-strap strap-top">TNT-20K</div>
+
+            <div class="tnt-strap strap-bottom">DANGER</div>
+
+        </div>
+
+
+        <!-- 爆炸衝擊波層 -->
+
+        <div class="blast-ring" id="blastRing"></div>
+
+    </div>
+
+
+    <div style="font-size: 13px; color: #aa3344; letter-spacing: 1px;">
+
+        ⚠️ 點擊已達 20,000 次上限，系統核心不可逆熔毀！
+
+    </div>
+
+</div>
+
+
+
+<!-- 爆炸後「停止運作」畫面 -->
+
+<div class="terminated-overlay" id="terminatedOverlay">
+
+    <div class="cracked-screen"></div>
+
+    <div class="scanlines"></div>
+
+
+    <div class="term-badge">
+
+        [ SYSTEM HALTED // 停止運作 ]
+
+    </div>
+
+
+    <h2 class="term-title">
+
+        💥 系統已被徹底炸毀
+
+    </h2>
+
+
+    <div class="term-desc">
+
+        STATUS : OFFLINE (已離線)<br>
+
+        核心承受超過 20,000 次極限點擊，炸藥已引爆並熔毀全部元件。<br>
+
+        所有運作程序已完全終止。
+
+    </div>
+
+
+    <button class="reboot-btn" onclick="location.href='clicked.html'">
+
+        [ 🔄 重新啟動系統 (REBOOT) ]
+
+    </button>
+
+</div>
+
+
+
+<script>
+
+    // ==================================================
+    // 5秒倒數與爆炸程序
+    // ==================================================
+
+    let timeLeft = 5;
+
+    const countdownEl = document.getElementById("countdown");
+
+    const flashOverlay = document.getElementById("flashOverlay");
+
+    const mainContainer = document.getElementById("mainContainer");
+
+    const blastRing = document.getElementById("blastRing");
+
+    const dynamiteBundle = document.getElementById("dynamiteBundle");
+
+    const terminatedOverlay = document.getElementById("terminatedOverlay");
+
+
+    // 啟動音效環境
+
+    let audioCtx = null;
+
+    function initAudio() {
+
+        if (!audioCtx) {
+
+            audioCtx = new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+
+        }
+
+        if (audioCtx.state === "suspended") {
+
+            audioCtx.resume();
+
+        }
+
+    }
+
+
+    // 警報嗶嗶聲
+
+    function playBeep(freq, dur) {
+
+        try {
+
+            initAudio();
+
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+
+            const gain = audioCtx.createGain();
+
+            osc.type = "sawtooth";
+
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+
+            osc.connect(gain);
+
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+
+            osc.stop(audioCtx.currentTime + dur);
+
+        } catch (e) {}
+
+    }
+
+
+    // 爆炸合成音效
+
+    function playExplosionSound() {
+
+        try {
+
+            initAudio();
+
+            if (!audioCtx) return;
+
+
+            // 白噪聲緩衝區模擬爆炸巨響
+
+            const bufferSize = audioCtx.sampleRate * 2;
+
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+
+            const data = buffer.getChannelData(0);
+
+
+            for (let i = 0; i < bufferSize; i++) {
+
+                data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (audioCtx.sampleRate * 0.5));
+
+            }
+
+
+            const noise = audioCtx.createBufferSource();
+
+            noise.buffer = buffer;
+
+
+            const filter = audioCtx.createBiquadFilter();
+
+            filter.type = "lowpass";
+
+            filter.frequency.setValueAtTime(800, audioCtx.currentTime);
+
+            filter.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 1.8);
+
+
+            const gain = audioCtx.createGain();
+
+            gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
+
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2.0);
+
+
+            noise.connect(filter);
+
+            filter.connect(gain);
+
+            gain.connect(audioCtx.destination);
+
+
+            noise.start();
+
+        } catch (e) {}
+
+    }
+
+
+
+    // 初次載入自動播放倒數
+
+    window.addEventListener("click", () => initAudio(), { once: true });
+
+
+
+    // 倒數計時器
+
+    const timer = setInterval(() => {
+
+        timeLeft--;
+
+
+        if (timeLeft > 0) {
+
+            countdownEl.textContent = timeLeft;
+
+            playBeep(450 + (5 - timeLeft) * 120, 0.15);
+
+        } else if (timeLeft === 0) {
+
+            countdownEl.textContent = "0";
+
+            clearInterval(timer);
+
+            triggerExplosion();
+
+        }
+
+    }, 1000);
+
+
+
+    // ==================================================
+    // 執行爆炸動畫
+    // ==================================================
+
+    function triggerExplosion() {
+
+        playExplosionSound();
+
+
+        // 全螢幕強烈白光閃爍
+
+        flashOverlay.style.transition = "opacity 0.05s ease-in";
+
+        flashOverlay.style.opacity = "1";
+
+
+        // 炸藥本體消失
+
+        dynamiteBundle.style.display = "none";
+
+
+        // 舞台震撼與火球衝擊波
+
+        document.body.classList.add("shaking");
+
+
+        blastRing.style.transition = "all 0.5s ease-out";
+
+        blastRing.style.opacity = "1";
+
+        blastRing.style.transform = "translate(-50%, -50%) scale(5)";
+
+
+        setTimeout(() => {
+
+            flashOverlay.style.transition = "opacity 0.6s ease-out";
+
+            flashOverlay.style.opacity = "0";
+
+        }, 120);
+
+
+        // 1.2 秒後畫面徹底切換為「停止運作」狀態
+
+        setTimeout(() => {
+
+            document.body.classList.remove("shaking");
+
+            mainContainer.style.display = "none";
+
+            terminatedOverlay.style.display = "flex";
+
+        }, 1200);
+
+    }
+
+</script>
+
+
+</body>
+
+</html>

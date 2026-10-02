@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>點擊極限挑戰 - Click Challenge</title>
+
+
+    <style>
+
+        /* =========================================
+           全域設定
+        ========================================= */
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background: #000000;
+
+            color: #00ff66;
+
+            font-family:
+                "Courier New",
+                "Microsoft JhengHei",
+                monospace;
+
+            overflow-x: hidden;
+
+            padding: 20px 0;
+
+        }
+
+
+        /* 背景科技網格 */
+
+        body::before {
+
+            content: "";
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+            height: 100%;
+
+            background-image:
+
+                linear-gradient(
+                    rgba(0, 255, 100, 0.04) 1px,
+                    transparent 1px
+                ),
+
+                linear-gradient(
+                    90deg,
+                    rgba(0, 255, 100, 0.04) 1px,
+                    transparent 1px
+                );
+
+            background-size: 40px 40px;
+
+            pointer-events: none;
+
+        }
+
+
+        /* 主容器 */
+
+        .container {
+
+            width: 520px;
+
+            max-width: 92%;
+
+            padding: 35px 30px;
+
+            background: #050505;
+
+            border: 2px solid #00ff66;
+
+            border-radius: 14px;
+
+            text-align: center;
+
+            box-shadow:
+
+                0 0 15px rgba(0, 255, 100, 0.35),
+
+                0 0 50px rgba(0, 255, 100, 0.12);
+
+            position: relative;
+
+            z-index: 1;
+
+        }
+
+
+        /* 頂部狀態列 */
+
+        .top-status {
+
+            color: #00aa44;
+
+            font-size: 13px;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        h1 {
+
+            margin: 5px 0 15px;
+
+            font-size: 26px;
+
+            letter-spacing: 3px;
+
+            color: #00ff66;
+
+            text-shadow: 0 0 10px rgba(0, 255, 100, 0.8);
+
+        }
+
+
+        /* =========================================
+           數據儀表板
+        ========================================= */
+
+        .dashboard {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 12px;
+
+            margin: 18px 0;
+
+        }
+
+
+        .stat-card {
+
+            background: #040d06;
+
+            border: 1px solid #14381e;
+
+            border-radius: 8px;
+
+            padding: 14px 10px;
+
+        }
+
+
+        .stat-title {
+
+            font-size: 12px;
+
+            color: #00aa44;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 6px;
+
+        }
+
+
+        .stat-value {
+
+            font-size: 28px;
+
+            font-weight: bold;
+
+            color: #00ff66;
+
+            text-shadow: 0 0 10px rgba(0, 255, 100, 0.7);
+
+        }
+
+
+        .stat-score {
+
+            color: #ffff00;
+
+            text-shadow: 0 0 10px rgba(255, 255, 0, 0.7);
+
+        }
+
+
+        /* =========================================
+           進度條
+        ========================================= */
+
+        .progress-section {
+
+            margin: 15px 0 20px;
+
+        }
+
+
+        .progress-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            font-size: 13px;
+
+            color: #00aa44;
+
+            margin-bottom: 6px;
+
+        }
+
+
+        .progress-bar-bg {
+
+            width: 100%;
+
+            height: 16px;
+
+            background: #0d1f12;
+
+            border: 1px solid #00ff66;
+
+            border-radius: 8px;
+
+            overflow: hidden;
+
+            position: relative;
+
+        }
+
+
+        .progress-bar-fill {
+
+            height: 100%;
+
+            width: 0%;
+
+            background: linear-gradient(
+                90deg,
+                #00ff66,
+                #00e5ff,
+                #ffff00
+            );
+
+            box-shadow: 0 0 10px rgba(0, 255, 100, 0.8);
+
+            transition: width 0.08s ease-out;
+
+        }
+
+
+        /* =========================================
+           千次鼓勵語彈出區
+        ========================================= */
+
+        .encouragement-box {
+
+            min-height: 52px;
+
+            margin: 14px 0;
+
+            padding: 10px 14px;
+
+            background: rgba(0, 255, 100, 0.06);
+
+            border: 1px dashed #008833;
+
+            border-radius: 8px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            transition: all 0.3s;
+
+        }
+
+
+        .encouragement-text {
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            color: #00e5ff;
+
+            text-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
+
+            animation: pulseEncouragement 1.5s infinite alternate;
+
+        }
+
+
+        @keyframes pulseEncouragement {
+
+            0% {
+                transform: scale(0.98);
+                opacity: 0.85;
+            }
+
+            100% {
+                transform: scale(1.03);
+                opacity: 1;
+            }
+
+        }
+
+
+        /* =========================================
+           超大點擊核心按鈕
+        ========================================= */
+
+        .click-area {
+
+            position: relative;
+
+            margin: 20px 0;
+
+        }
+
+
+        .click-button {
+
+            width: 100%;
+
+            height: 120px;
+
+            background: radial-gradient(
+                circle,
+                #082410 0%,
+                #020b04 100%
+            );
+
+            border: 2px solid #00ff66;
+
+            border-radius: 12px;
+
+            color: #00ff66;
+
+            font-family:
+                "Courier New",
+                "Microsoft JhengHei",
+                monospace;
+
+            font-size: 24px;
+
+            font-weight: 900;
+
+            letter-spacing: 3px;
+
+            cursor: pointer;
+
+            box-shadow:
+
+                0 0 20px rgba(0, 255, 100, 0.3),
+
+                inset 0 0 15px rgba(0, 255, 100, 0.2);
+
+            transition:
+
+                transform 0.05s ease,
+
+                box-shadow 0.05s ease,
+
+                background 0.05s ease;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 6px;
+
+        }
+
+
+        .click-button:hover {
+
+            background: radial-gradient(
+                circle,
+                #0f3d1b 0%,
+                #041407 100%
+            );
+
+            box-shadow:
+
+                0 0 25px rgba(0, 255, 100, 0.5),
+
+                inset 0 0 20px rgba(0, 255, 100, 0.3);
+
+        }
+
+
+        .click-button:active {
+
+            transform: scale(0.97);
+
+            background: radial-gradient(
+                circle,
+                #175927 0%,
+                #082410 100%
+            );
+
+            box-shadow:
+
+                0 0 35px rgba(0, 255, 100, 0.8),
+
+                inset 0 0 25px rgba(0, 255, 100, 0.6);
+
+        }
+
+
+        .click-subtext {
+
+            font-size: 13px;
+
+            color: #00aa44;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        /* 浮動得分文字 */
+
+        .floating-score {
+
+            position: absolute;
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            color: #ffff00;
+
+            text-shadow: 0 0 6px #ffff00;
+
+            pointer-events: none;
+
+            animation: floatUp 0.6s ease-out forwards;
+
+            z-index: 10;
+
+        }
+
+
+        @keyframes floatUp {
+
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-40px) scale(1.3);
+            }
+
+        }
+
+
+        /* =========================================
+           底部輔助列
+        ========================================= */
+
+        .footer-bar {
+
+            margin-top: 15px;
+
+            font-size: 13px;
+
+            color: #496b53;
+
+            line-height: 1.6;
+
+        }
+
+
+        .reset-link {
+
+            display: inline-block;
+
+            margin-top: 10px;
+
+            color: #008833;
+
+            text-decoration: underline;
+
+            cursor: pointer;
+
+            font-size: 12px;
+
+        }
+
+
+        .reset-link:hover {
+
+            color: #00ff66;
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- 頂端狀態 -->
+
+    <div class="top-status">
+
+        SYSTEM // ULTRA CLICK COUNTER
+
+    </div>
+
+
+    <h1>⚡ 點擊極限挑戰 ⚡</h1>
+
+
+
+    <!-- 數據儀表板 -->
+
+    <div class="dashboard">
+
+        <div class="stat-card">
+
+            <div class="stat-title">已點擊次數</div>
+
+            <div id="clickCount" class="stat-value">0</div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-title">獲得總分數</div>
+
+            <div id="score" class="stat-value stat-score">0</div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- 進度條 -->
+
+    <div class="progress-section">
+
+        <div class="progress-header">
+
+            <span>能量進度：<span id="percentText">0%</span></span>
+
+            <span>目標：20,000 次</span>
+
+        </div>
+
+
+        <div class="progress-bar-bg">
+
+            <div id="progressBar" class="progress-bar-fill"></div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- 千次鼓勵詞語區 -->
+
+    <div class="encouragement-box" id="encouragementBox">
+
+        <div id="encouragementText" class="encouragement-text">
+
+            💡 點擊下方核心按鈕開始累積能量！
+
+        </div>
+
+    </div>
+
+
+
+    <!-- 超大點擊核心按鈕 -->
+
+    <div class="click-area" id="clickArea">
+
+        <button
+            id="clickBtn"
+            class="click-button"
+            onclick="handleClick(event)">
+
+            <span>💥 點擊我！CLICK HERE</span>
+
+            <span class="click-subtext">[ 每點 1 次 +1 分 · 滿千送鼓勵 ]</span>
+
+        </button>
+
+    </div>
+
+
+
+    <!-- 底部說明 -->
+
+    <div class="footer-bar">
+
+        🎯 當點擊累積達到 20,000 次時，將進入極限臨界反應！<br>
+
+        <span class="reset-link" onclick="resetCounter()">[ 重置計數歸零 ]</span>
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+    // ==================================================
+    // 遊戲狀態數據
+    // ==================================================
+
+    let clicks = 0;
+
+    let score = 0;
+
+    let isRedirecting = false;
+
+
+    const clickCountEl = document.getElementById("clickCount");
+
+    const scoreEl = document.getElementById("score");
+
+    const progressBar = document.getElementById("progressBar");
+
+    const percentText = document.getElementById("percentText");
+
+    const encouragementText = document.getElementById("encouragementText");
+
+    const clickArea = document.getElementById("clickArea");
+
+
+
+    // ==================================================
+    // 1000次專屬鼓勵詞語庫
+    // ==================================================
+
+    const encouragements = [
+
+        "🌟 太神啦！突破 1,000 次！手指開始發熱！",
+
+        "🔥 突破 2,000 次！這手速簡直非同凡響！",
+
+        "⚡ 突破 3,000 次！音速般的點擊節奏，勢不可擋！",
+
+        "🚀 突破 4,000 次！無可阻擋的強大爆發力！",
+
+        "💥 突破 5,000 次！已經超越 99% 的一般人類！",
+
+        "🏆 突破 6,000 次！按鍵都在為你的熱情燃燒！",
+
+        "🦾 突破 7,000 次！機器人般的極限超能發揮！",
+
+        "🌠 突破 8,000 次！傳奇級的手速神話誕生！",
+
+        "🔮 突破 9,000 次！戰鬥力已經衝破天際！",
+
+        "👑 突破 10,000 次！萬次點擊達人，唯你獨尊！",
+
+        "💫 突破 11,000 次！次元壁即將被你點穿！",
+
+        "🎯 突破 12,000 次！穩健精準，神乎其技！",
+
+        "⚔️ 突破 13,000 次！戰意沸騰，無堅不摧！",
+
+        "🛡️ 突破 14,000 次！堅韌不拔，意志如鋼！",
+
+        "🌋 突破 15,000 次！狂暴能量已達臨界點！",
+
+        "🌈 突破 16,000 次！奇蹟般的耐力，震撼全場！",
+
+        "🌪️ 突破 17,000 次！狂風暴雨般的極速狂瀾！",
+
+        "⚠️ 突破 18,000 次！系統核心過熱警報響起！",
+
+        "🚨 突破 19,000 次！極限臨界過載即將發生！",
+
+        "🧨 突破 20,000 次！極限達成，引爆程序啟動！"
+
+    ];
+
+
+
+    // ==================================================
+    // 點擊事件處理
+    // ==================================================
+
+    let floatingCount = 0;
+
+
+    function handleClick(e) {
+
+        if (isRedirecting) return;
+
+
+        clicks++;
+
+        score++;
+
+
+        // 即時更新數值
+
+        clickCountEl.textContent = clicks.toLocaleString();
+
+        scoreEl.textContent = score.toLocaleString();
+
+
+        // 更新進度條
+
+        const pct = Math.min(100, (clicks / 20000) * 100);
+
+        progressBar.style.width = pct + "%";
+
+        percentText.textContent = pct.toFixed(1) + "%";
+
+
+        // 每點 1000 次給予一次鼓勵詞語
+
+        if (clicks % 1000 === 0 && clicks > 0) {
+
+            const index = Math.min(
+                Math.floor(clicks / 1000) - 1,
+                encouragements.length - 1
+            );
+
+            encouragementText.textContent = encouragements[index];
+
+            encouragementText.style.color = "#ffff00";
+
+            encouragementText.style.textShadow = "0 0 12px #ffff00";
+
+        }
+
+
+        // 浮動 +1 效果（限制同時最多 8 個以維持高頻點擊順暢）
+
+        if (floatingCount < 8) {
+
+            spawnFloatingText(e);
+
+        }
+
+
+        // 達到 20000 次跳轉到 explode.html
+
+        if (clicks >= 20000 && !isRedirecting) {
+
+            isRedirecting = true;
+
+            encouragementText.textContent =
+                "🧨 能量全面超載！即將引爆系統！";
+
+            encouragementText.style.color = "#ff3333";
+
+
+            setTimeout(() => {
+
+                window.location.href = "explode.html";
+
+            }, 200);
+
+        }
+
+    }
+
+
+
+    // ==================================================
+    // 浮動 +1 得分效果
+    // ==================================================
+
+    function spawnFloatingText(e) {
+
+        floatingCount++;
+
+
+        const span = document.createElement("span");
+
+        span.className = "floating-score";
+
+        span.textContent = "+1";
+
+
+        const rect = clickArea.getBoundingClientRect();
+
+        let x = rect.width / 2;
+
+        let y = rect.height / 2;
+
+
+        if (e && e.clientX && e.clientY) {
+
+            x = e.clientX - rect.left;
+
+            y = e.clientY - rect.top;
+
+        } else {
+
+            x += (Math.random() - 0.5) * 60;
+
+            y += (Math.random() - 0.5) * 20;
+
+        }
+
+
+        span.style.left = x + "px";
+
+        span.style.top = y + "px";
+
+
+        clickArea.appendChild(span);
+
+
+        setTimeout(() => {
+
+            if (span.parentNode) {
+
+                span.parentNode.removeChild(span);
+
+            }
+
+            floatingCount--;
+
+        }, 600);
+
+    }
+
+
+
+    // ==================================================
+    // 重置功能
+    // ==================================================
+
+    function resetCounter() {
+
+        if (isRedirecting) return;
+
+
+        clicks = 0;
+
+        score = 0;
+
+        clickCountEl.textContent = "0";
+
+        scoreEl.textContent = "0";
+
+        progressBar.style.width = "0%";
+
+        percentText.textContent = "0%";
+
+        encouragementText.textContent =
+            "💡 點擊下方核心按鈕開始累積能量！";
+
+        encouragementText.style.color = "#00e5ff";
+
+    }
+
+</script>
+
+
+</body>
+
+</html>
