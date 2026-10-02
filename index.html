@@ -1,0 +1,302 @@
+```html
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>密碼輸入練習</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f2f4f7;
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+        }
+
+        .container {
+            width: 420px;
+            max-width: 90%;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 30px;
+        }
+
+        .description {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .lock {
+            font-size: 70px;
+            margin: 10px 0 20px;
+        }
+
+        .password-box {
+            width: 100%;
+            height: 60px;
+            font-size: 32px;
+            text-align: center;
+            letter-spacing: 12px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .password-box:focus {
+            border-color: #4285f4;
+        }
+
+        button {
+            width: 100%;
+            height: 50px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .check-button {
+            background: #4285f4;
+            color: white;
+        }
+
+        .check-button:hover {
+            background: #3367d6;
+        }
+
+        .new-button {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .new-button:hover {
+            background: #dfe3e6;
+        }
+
+        #message {
+            min-height: 35px;
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .attempts {
+            margin-top: 15px;
+            color: #777;
+        }
+
+        .success {
+            color: #198754;
+        }
+
+        .error {
+            color: #dc3545;
+        }
+
+        .hint {
+            margin-top: 25px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            color: #777;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="lock">🔐</div>
+
+    <h1>密碼輸入練習</h1>
+
+    <div class="description">
+        請輸入 3 位數密碼
+    </div>
+
+    <input
+        type="text"
+        id="passwordInput"
+        class="password-box"
+        maxlength="3"
+        inputmode="numeric"
+        autocomplete="off"
+        placeholder="•••"
+    >
+
+    <button
+        class="check-button"
+        onclick="checkPassword()">
+        確認密碼
+    </button>
+
+    <button
+        class="new-button"
+        onclick="newPassword()">
+        重新產生密碼
+    </button>
+
+    <div id="message"></div>
+
+    <div class="attempts">
+        嘗試次數：<span id="attemptCount">0</span>
+    </div>
+
+    <div class="hint">
+        💡 請使用 AutoHotkey 自動輸入密碼進行練習
+    </div>
+
+</div>
+
+
+<script>
+
+    // ==========================================
+    // 產生 3 位數隨機密碼
+    // ==========================================
+
+    let password = generatePassword();
+
+    let attempts = 0;
+
+
+    function generatePassword() {
+
+        // 產生 100 ~ 999 的三位數
+        return Math.floor(Math.random() * 900) + 100;
+
+    }
+
+
+    // ==========================================
+    // 檢查密碼
+    // ==========================================
+
+    function checkPassword() {
+
+        const input =
+            document.getElementById("passwordInput").value;
+
+        const message =
+            document.getElementById("message");
+
+        attempts++;
+
+        document.getElementById("attemptCount").textContent =
+            attempts;
+
+
+        // 檢查是否為三位數
+        if (!/^\d{3}$/.test(input)) {
+
+            message.textContent =
+                "請輸入 3 位數字";
+
+            message.className = "error";
+
+            return;
+        }
+
+
+        // 判斷密碼是否正確
+        if (Number(input) === password) {
+
+            message.textContent =
+                "🎉 解鎖成功！";
+
+            message.className = "success";
+
+        } else {
+
+            message.textContent =
+                "❌ 密碼錯誤，請再試一次";
+
+            message.className = "error";
+
+        }
+
+        // 清空輸入框
+        document.getElementById("passwordInput").value = "";
+
+        // 讓游標回到輸入框
+        document.getElementById("passwordInput").focus();
+
+    }
+
+
+    // ==========================================
+    // 重新產生密碼
+    // ==========================================
+
+    function newPassword() {
+
+        password = generatePassword();
+
+        attempts = 0;
+
+        document.getElementById("attemptCount").textContent =
+            "0";
+
+        document.getElementById("message").textContent =
+            "";
+
+        document.getElementById("passwordInput").value =
+            "";
+
+        document.getElementById("passwordInput").focus();
+
+    }
+
+
+    // ==========================================
+    // 按 Enter 也可以送出
+    // ==========================================
+
+    document
+        .getElementById("passwordInput")
+        .addEventListener("keydown", function(event) {
+
+            if (event.key === "Enter") {
+
+                checkPassword();
+
+            }
+
+        });
+
+
+    // 頁面載入後自動將游標放到輸入框
+
+    window.onload = function() {
+
+        document
+            .getElementById("passwordInput")
+            .focus();
+
+    };
+
+</script>
+
+</body>
+</html>
+```
