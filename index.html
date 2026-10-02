@@ -427,6 +427,18 @@
         }
 
 
+        .warning {
+
+            color: #ffff00;
+
+            text-shadow:
+
+                0 0 10px
+                rgba(255, 255, 0, 0.7);
+
+        }
+
+
         /* =========================================
            嘗試次數
         ========================================= */
@@ -755,10 +767,12 @@
 
 
     // ==================================================
-    // 嘗試次數
+    // 嘗試次數與作弊偷看狀態
     // ==================================================
 
     let attempts = 0;
+
+    let hasPeeked = false;
 
 
     // ==================================================
@@ -829,37 +843,57 @@
 
         if (Number(input) === password) {
 
-            message.textContent =
-                "🎉 恭喜你破解成功！";
+            // 判斷是否曾點擊小鍵盤偷看過密碼
+            if (hasPeeked) {
 
-            message.className =
-                "success";
+                message.textContent =
+                    "已答對，但是你偷吃步，請再嘗試！";
+
+                message.className =
+                    "warning";
+
+                document
+                    .getElementById("passwordHint")
+                    .textContent =
+                    "👀 CHEATING DETECTED";
+
+                // 不鎖定輸入框，也不跳轉至 success.html
+
+            } else {
+
+                message.textContent =
+                    "🎉 恭喜你破解成功！";
+
+                message.className =
+                    "success";
 
 
-            // 鎖定輸入框
+                // 鎖定輸入框
 
-            document
-                .getElementById("passwordInput")
-                .disabled = true;
-
-
-            // 顯示成功訊息
-
-            document
-                .getElementById("passwordHint")
-                .textContent =
-                "🔓 SECURITY BREACHED";
+                document
+                    .getElementById("passwordInput")
+                    .disabled = true;
 
 
-            // 跳轉至成功頁面
+                // 顯示成功訊息
 
-            setTimeout(function() {
+                document
+                    .getElementById("passwordHint")
+                    .textContent =
+                    "🔓 SECURITY BREACHED";
 
-                window.location.href =
-                    "success.html?attempts="
-                    + attempts;
 
-            }, 1000);
+                // 跳轉至成功頁面
+
+                setTimeout(function() {
+
+                    window.location.href =
+                        "success.html?attempts="
+                        + attempts;
+
+                }, 1000);
+
+            }
 
         }
 
@@ -916,6 +950,9 @@
 
     function showSecretPassword() {
 
+        // 標記已透過小鍵盤偷看過密碼
+        hasPeeked = true;
+
         const hint =
             document
                 .getElementById("passwordHint");
@@ -965,9 +1002,11 @@
             generatePassword();
 
 
-        // 歸零
+        // 歸零與重設偷看標記
 
         attempts = 0;
+
+        hasPeeked = false;
 
 
         document
